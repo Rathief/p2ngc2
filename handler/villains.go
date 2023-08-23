@@ -1,20 +1,17 @@
 package handler
 
 import (
-	"fmt"
+	"encoding/json"
 	"log"
 	"net/http"
+	"p2ngc2/entity"
 
 	"github.com/julienschmidt/httprouter"
 )
 
 func (h handler) GetVillains(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	var (
-		id     int
-		name   string
-		verse  string
-		imgURL string
-	)
+	var villain entity.Villain
+	var villains []entity.Villain
 	rows, err := h.DB.QueryContext(h.BG, `
 	SELECT * FROM villains;
 	`)
@@ -22,7 +19,11 @@ func (h handler) GetVillains(w http.ResponseWriter, r *http.Request, p httproute
 		log.Panic(err)
 	}
 	for rows.Next() {
-		rows.Scan(&id, &name, &verse, &imgURL)
-		fmt.Fprintf(w, "%-3s %-20s %-10s %s\n", fmt.Sprint(id), name, verse, imgURL)
+		rows.Scan(&villain.ID, &villain.Name, &villain.Universe, &villain.ImgURL)
+		villains = append(villains, villain)
+	}
+	err = json.NewEncoder(w).Encode(villains)
+	if err != nil {
+		log.Panic(err)
 	}
 }

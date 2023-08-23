@@ -15,3 +15,10 @@ type Hero struct {
 	Skill    string `json:"skill"`
 	ImgURL   string `json:"imgurl"`
 }
+
+type Villain struct {
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	Universe string `json:"universe"`
+	ImgURL   string `json:"imgurl"`
+}
